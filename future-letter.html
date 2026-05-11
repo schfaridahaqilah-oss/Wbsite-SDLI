@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Museum Pos Indonesia - Tulis Surat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #2c2418;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      font-family: 'Quicksand', sans-serif;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(#e8dccc 2px, transparent 2px);
+      background-size: 35px 35px;
+      opacity: 0.2;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .pos-wrapper {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      filter: drop-shadow(0 20px 35px rgba(0,0,0,0.2));
+    }
+    .pos-card {
+      background: #fffef7;
+      background-image: linear-gradient(to bottom, #fffcf0, #fff7e8);
+      border-radius: 48px 48px 48px 16px;
+      border: 1px solid #e0c8a0;
+      position: relative;
+      overflow: hidden;
+      padding: 2rem 1.8rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+    .pos-card::before {
+      content: "✉";
+      font-size: 6rem;
+      position: absolute;
+      bottom: -20px;
+      right: -15px;
+      opacity: 0.05;
+      transform: rotate(-15deg);
+      pointer-events: none;
+    }
+    .pos-card::after {
+      content: "";
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 80px;
+      height: 80px;
+      border-top: 2px solid #d4b87a;
+      border-left: 2px solid #d4b87a;
+      border-radius: 16px 0 0 0;
+      pointer-events: none;
+    }
+    .title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: #5c3a1f;
+      text-align: center;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      text-align: center;
+      color: #b48c5c;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px dashed #e2cea4;
+      display: inline-block;
+      width: auto;
+      padding-bottom: 0.5rem;
+    }
+    .btn-primary {
+      background: #c25b3a;
+      border: none;
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      padding: 0.8rem 2rem;
+      border-radius: 60px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 5px 12px rgba(194, 91, 58, 0.3);
+    }
+    .btn-primary:hover {
+      background: #a34528;
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: #b99a6b;
+      box-shadow: none;
+    }
+    .btn-secondary:hover { background: #9f7d52; }
+    .choice-grid {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+    .choice-card {
+      background: linear-gradient(145deg, #fff6e8, #fffbee);
+      border-radius: 28px;
+      padding: 1.5rem;
+      width: 200px;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.2s;
+      border: 1px solid #efdfbf;
+    }
+    .choice-card:hover {
+      transform: translateY(-6px);
+      border-color: #c25b3a;
+    }
+    .form-group { margin-bottom: 1.4rem; }
+    label { font-weight: 600; color: #7a5a3a; display: block; margin-bottom: 5px; }
+    input, textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: #fffdf8;
+      border: 1.5px solid #eeddbb;
+      border-radius: 20px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.95rem;
+    }
+    input:focus, textarea:focus {
+      border-color: #c25b3a;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(194,91,58,0.1);
+    }
+    textarea.letter-paper {
+      background: #fffaf0 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="30"><line x1="0" y1="30" x2="100%" y2="30" stroke="%23e8cfaa" stroke-width="1"/></svg>') repeat-y;
+      background-size: 100% 30px;
+      line-height: 30px;
+      min-height: 200px;
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .stamp-collection {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+    .stamp {
+      width: 85px;
+      height: 100px;
+      background: radial-gradient(circle at 30% 25%, #ffe3b5, #ebd1a9);
+      border-radius: 6px;
+      border: 2px dashed #bc8f6b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      cursor: grab;
+    }
+    .stamp-1::before { content: "🏛️"; }
+    .stamp-2::before { content: "🌿"; }
+    .stamp-3::before { content: "✉️"; }
+    .envelope {
+      background: #f8eedb;
+      width: 260px;
+      height: 160px;
+      margin: 1rem auto;
+      border-radius: 12px;
+      border: 1px solid #d6bb8c;
+      position: relative;
+    }
+    .envelope:before {
+      content: "✉️";
+      position: absolute;
+      left: 20px;
+      top: 60px;
+      font-size: 2.8rem;
+      opacity: 0.3;
+    }
+    .stamp-slot {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      width: 70px;
+      height: 82px;
+      border: 2px dashed #c8a87c;
+      background: rgba(235, 218, 186, 0.6);
+      border-radius: 6px;
+    }
+    .mail-bus {
+      background: #e0c89c;
+      width: 280px;
+      margin: 1rem auto;
+      padding: 1rem;
+      text-align: center;
+      border-radius: 100px;
+      font-size: 2rem;
+      border: 1px solid #b38f60;
+    }
+    .footer-action {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+    .toast-custom {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2c2418;
+      color: #ffefcf;
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-weight: 500;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .countdown {
+      background: #efe2cd;
+      padding: 0.6rem;
+      border-radius: 40px;
+      text-align: center;
+      font-weight: bold;
+    }
+    button:disabled { opacity: 0.6; pointer-events: none; }
+    @media (max-width: 550px) {
+      .pos-card { padding: 1.2rem; }
+      .envelope { width: 200px; height: 130px; }
+    }
+  </style>
+</head>
+<body>
+<div class="pos-wrapper">
+  <div class="pos-card" id="appRoot"></div>
+</div>
+<div class="toast-custom" id="toastMsg"></div>
+
+<script>
+  (function() {
+    const state = {
+      step: 'opening',
+      letterType: null,
+      future: { pengirim: '', email: '', tanggal: '', isi: '' },
+      anonim: { email: '', isi: '' },
+      stampApplied: false,
+      envelopeDropped: false
+    };
+    const API_BASE = 'http://localhost:3000/api';
+    function showToast(msg, duration = 2800) {
+      const toast = document.getElementById('toastMsg');
+      toast.textContent = msg;
+      toast.style.opacity = '1';
+      setTimeout(() => toast.style.opacity = '0', duration);
+    }
+    function validEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+    function getTomorrow() { let d = new Date(); d.setDate(d.getDate()+1); return d.toISOString().split('T')[0]; }
+    function formatDate(iso) { if(!iso) return ''; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+
+    const root = document.getElementById('appRoot');
+    function render() {
+      let html = '';
+      if (state.step === 'opening') {
+        html = `<div><div class="title">🏛️ Museum Pos Indonesia</div><div class="subtitle" style="display:block;text-align:center;">Surat yang membawa cerita</div><div style="text-align:center; font-size:5rem; margin:1rem 0;">📜</div><div style="text-align:center;"><button class="btn-primary" id="startBtn">Mulai Menulis</button></div></div>`;
+      } else if (state.step === 'choice') {
+        html = `<div><div class="title">Pilih jenis surat</div><div class="choice-grid"><div class="choice-card" data-type="future"><h3>📬 Surat Masa Depan</h3><p>Untuk dirimu nanti</p></div><div class="choice-card" data-type="anonim"><h3>🎭 Surat Anonim</h3><p>Tanpa nama pengirim</p></div></div></div>`;
+      } else if (state.step === 'future1') {
+        html = `<div><div class="title">✍️ Identitas</div><div class="form-group"><label>Nama Pengirim</label><input type="text" id="namaPengirim" value="${state.future.pengirim}"></div><div class="form-group"><label>Email Tujuan</label><input type="email" id="emailTujuan" value="${state.future.email}"></div><div class="form-group"><label>Tanggal dibuka kembali</label><input type="date" id="tglSurat" min="${getTomorrow()}" value="${state.future.tanggal}"></div><div class="footer-action"><button class="btn-primary" id="nextToFuture2">Selanjutnya →</button></div></div>`;
+      } else if (state.step === 'future2') {
+        const draft = localStorage.getItem('draftSuratMasaDepan') || '';
+        html = `<div><div class="title">💌 Tulis surat</div><textarea class="letter-paper" id="suratIsi" maxlength="1200">${draft}</textarea><div class="char-counter" style="text-align:right; margin:5px 0;"><span id="charCount">0</span>/1200</div><div class="footer-action"><button class="btn-secondary" id="backToFuture1">Kembali</button><button class="btn-primary" id="nextToStamp">Tempel Prangko</button></div></div>`;
+      } else if (state.step === 'future3') {
+        html = `<div><div class="title">📮 Tempel prangko</div><div class="stamp-collection"><div class="stamp stamp-1" draggable="true"></div><div class="stamp stamp-2" draggable="true"></div><div class="stamp stamp-3" draggable="true"></div></div><div class="envelope" id="envelopeArea"><div class="stamp-slot" id="stampSlot"></div></div><div class="footer-action"><button class="btn-primary" id="nextStep3Btn" ${!state.stampApplied ? 'disabled' : ''}>Lanjutkan</button></div></div>`;
+      } else if (state.step === 'future4') {
+        html = `<div><div class="title">🚌 Kirim ke Bis Surat</div><div class="envelope" id="dragEnvelope" style="cursor:grab;">✉️ Surat</div><div class="mail-bus" id="mailBus">🚌 POS KELILING</div><p style="text-align:center; font-size:0.8rem; margin-top:12px;">Seret amplop ke bis surat</p></div>`;
+      } else if (state.step === 'future5') {
+        html = `<div><div class="title">✨ Surat Terkirim!</div><div style="text-align:center; font-size:2.5rem;">📨</div><div class="countdown" id="countdownFuture"></div><p style="text-align:center; margin:1rem 0;">Akan dibuka pada <strong>${formatDate(state.future.tanggal)}</strong></p><button class="btn-primary" id="resetApp">Tulis Surat Baru</button></div>`;
+      } else if (state.step === 'anonim') {
+        html = `<div><div class="title">🕊️ Surat Anonim</div><div class="form-group"><label>Email Penerima</label><input type="email" id="anonimEmail"></div><textarea class="letter-paper" id="anonimIsi" maxlength="800"></textarea><div style="text-align:right;"><span id="anonimCount">0</span>/800</div><div class="footer-action"><button class="btn-secondary" id="backAnonim">Kembali</button><button class="btn-primary" id="kirimAnonimBtn">Kirim Anonim</button></div></div>`;
+      }
+      root.innerHTML = html;
+      attachEvents();
+      gsap.fromTo('.pos-card', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45 });
+    }
+
+    function attachEvents() {
+      if (state.step === 'opening') {
+        document.getElementById('startBtn')?.addEventListener('click', () => { state.step = 'choice'; render(); });
+      } else if (state.step === 'choice') {
+        document.querySelectorAll('.choice-card').forEach(card => {
+          card.addEventListener('click', (e) => {
+            state.letterType = card.dataset.type;
+            if (state.letterType === 'future') { state.step = 'future1'; render(); }
+            else { state.step = 'anonim'; render(); }
+          });
+        });
+      } else if (state.step === 'future1') {
+        document.getElementById('nextToFuture2')?.addEventListener('click', () => {
+          const nama = document.getElementById('namaPengirim').value.trim();
+          const email = document.getElementById('emailTujuan').value.trim();
+          const tgl = document.getElementById('tglSurat').value;
+          if (!nama || !email || !tgl) { showToast("Semua harus diisi"); return; }
+          if (!validEmail(email)) { showToast("Email tidak valid"); return; }
+          if (new Date(tgl) <= new Date()) { showToast("Tanggal minimal besok"); return; }
+          state.future = { pengirim: nama, email, tanggal: tgl, isi: '' };
+          state.step = 'future2'; render();
+        });
+      } else if (state.step === 'future2') {
+        const ta = document.getElementById('suratIsi');
+        const counter = document.getElementById('charCount');
+        const update = () => { counter.textContent = ta.value.length; localStorage.setItem('draftSuratMasaDepan', ta.value); };
+        ta.addEventListener('input', update); update();
+        document.getElementById('backToFuture1')?.addEventListener('click', () => { state.step = 'future1'; render(); });
+        document.getElementById('nextToStamp')?.addEventListener('click', () => {
+          if (ta.value.trim().length < 15) { showToast("Minimal 15 karakter"); return; }
+          state.future.isi = ta.value.trim();
+          state.stampApplied = false;
+          state.step = 'future3'; render();
+        });
+      } else if (state.step === 'future3') {
+        initStampDrag();
+        document.getElementById('nextStep3Btn')?.addEventListener('click', () => { if (state.stampApplied) { state.step = 'future4'; state.envelopeDropped = false; render(); } });
+      } else if (state.step === 'future4') {
+        initEnvelopeDrag();
+      } else if (state.step === 'future5') {
+        startCountdownTimer(state.future.tanggal);
+        document.getElementById('resetApp')?.addEventListener('click', () => { location.reload(); });
+      } else if (state.step === 'anonim') {
+        const anonimText = document.getElementById('anonimIsi');
+        const countSpan = document.getElementById('anonimCount');
+        if(anonimText) anonimText.addEventListener('input', (e) => { countSpan.textContent = e.target.value.length; });
+        document.getElementById('backAnonim')?.addEventListener('click', () => { state.step = 'choice'; render(); });
+        document.getElementById('kirimAnonimBtn')?.addEventListener('click', async () => {
+          const email = document.getElementById('anonimEmail').value.trim();
+          const isi = anonimText.value.trim();
+          if (!email || !validEmail(email)) { showToast("Email tidak valid"); return; }
+          if (isi.length < 5) { showToast("Pesan terlalu pendek"); return; }
+          await sendAnonimLetter(email, isi);
+        });
+      }
+    }
+
+    function initStampDrag() {
+      const stamps = document.querySelectorAll('.stamp');
+      const slot = document.getElementById('stampSlot');
+      stamps.forEach(stamp => {
+        stamp.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/plain', 'stamp'); });
+        stamp.setAttribute('draggable', 'true');
+      });
+      slot.addEventListener('dragover', (e) => e.preventDefault());
+      slot.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (state.stampApplied) return;
+        state.stampApplied = true;
+        slot.innerHTML = '<div style="font-size:2rem;">📮</div>';
+        slot.style.background = '#cdb38c';
+        gsap.to(slot, { scale: 1.2, duration: 0.2, yoyo: true, repeat: 1 });
+        showToast("Prangko terpasang!");
+        const btn = document.getElementById('nextStep3Btn');
+        if (btn) btn.disabled = false;
+      });
+    }
+
+    function initEnvelopeDrag() {
+      const envelope = document.getElementById('dragEnvelope');
+      const bus = document.getElementById('mailBus');
+      if (!envelope || !bus) return;
+      let clone, startX, startY, origLeft, origTop, dragging = false;
+      const onStart = (e) => {
+        if (state.envelopeDropped) return;
+        e.preventDefault();
+        const point = e.touches ? e.touches[0] : e;
+        const rect = envelope.getBoundingClientRect();
+        origLeft = rect.left + window.scrollX;
+        origTop = rect.top + window.scrollY;
+        startX = point.clientX; startY = point.clientY;
+        dragging = true;
+        clone = envelope.cloneNode(true);
+        clone.style.position = 'fixed';
+        clone.style.left = origLeft + 'px';
+        clone.style.top = origTop + 'px';
+        clone.style.width = rect.width + 'px';
+        clone.style.zIndex = '2000';
+        clone.style.opacity = '0.8';
+        document.body.appendChild(clone);
+        envelope.style.opacity = '0.3';
+      };
+      const onMove = (e) => {
+        if (!dragging || !clone) return;
+        e.preventDefault();
+        const point = e.touches ? e.touches[0] : e;
+        const dx = point.clientX - startX;
+        const dy = point.clientY - startY;
+        clone.style.left = (origLeft + dx) + 'px';
+        clone.style.top = (origTop + dy) + 'px';
+      };
+      const onEnd = (e) => {
+        if (!dragging) return;
+        dragging = false;
+        const point = e.changedTouches ? e.changedTouches[0] : e;
+        const busRect = bus.getBoundingClientRect();
+        if (point.clientX >= busRect.left && point.clientX <= busRect.right && point.clientY >= busRect.top && point.clientY <= busRect.bottom) {
+          if (!state.envelopeDropped) {
+            state.envelopeDropped = true;
+            gsap.to(envelope, { scale: 0, opacity: 0, duration: 0.3 });
+            const busClone = bus.cloneNode(true);
+            bus.style.opacity = '0';
+            document.body.appendChild(busClone);
+            const startRect = bus.getBoundingClientRect();
+            busClone.style.position = 'fixed';
+            busClone.style.left = startRect.left + 'px';
+            busClone.style.top = startRect.top + 'px';
+            busClone.style.zIndex = '1000';
+            gsap.to(busClone, { x: window.innerWidth - startRect.left + 100, duration: 1.2, ease: "power2.in", onComplete: () => {
+              busClone.remove();
+              bus.style.opacity = '1';
+              showToast("Surat masuk bis! Mengirim...");
+              sendFutureLetter().then(() => { state.step = 'future5'; render(); });
+            }});
+          }
+        }
+        if (clone) clone.remove();
+        envelope.style.opacity = '1';
+      };
+      envelope.addEventListener('mousedown', onStart);
+      envelope.addEventListener('touchstart', onStart, { passive: false });
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('touchmove', onMove, { passive: false });
+      window.addEventListener('mouseup', onEnd);
+      window.addEventListener('touchend', onEnd);
+    }
+
+    async function sendFutureLetter() {
+      try {
+        const res = await fetch(`${API_BASE}/surat-masa-depan`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nama_pengirim: state.future.pengirim, email_tujuan: state.future.email, isi_surat: state.future.isi, tanggal_kirim: state.future.tanggal })
+        });
+        const json = await res.json();
+        showToast(json.success ? "Surat masa depan tersimpan!" : "Gagal simpan");
+      } catch(e) { showToast("Koneksi gagal, surat disimpan sementara"); }
+    }
+
+    async function sendAnonimLetter(email, isi) {
+      try {
+        const res = await fetch(`${API_BASE}/surat-anonim`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email_tujuan: email, isi_surat: isi })
+        });
+        const json = await res.json();
+        if (json.success) { showToast("Surat anonim terkirim!"); state.step = 'choice'; render(); }
+        else showToast("Gagal mengirim");
+      } catch(e) { showToast("Error jaringan"); }
+    }
+
+    function startCountdownTimer(targetDate) {
+      const el = document.getElementById('countdownFuture');
+      if (!el) return;
+      const targetTime = new Date(targetDate).getTime();
+      const interval = setInterval(() => {
+        const diff = targetTime - new Date().getTime();
+        if (diff <= 0) { el.textContent = "📬 Surat siap dibuka!"; clearInterval(interval); return; }
+        const days = Math.floor(diff / (1000*60*60*24));
+        const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+        const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+        const seconds = Math.floor((diff % (1000*60)) / 1000);
+        el.textContent = `⏳ ${days} hari ${hours} jam ${minutes} menit ${seconds} detik`;
+      }, 1000);
+    }
+    render();
+  })();
+</script>
+</body>
+</html>
